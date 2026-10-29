@@ -1,0 +1,982 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>ヨルシカ ランキング</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+:root {
+  --bg: #f4f3f0; --surface: #ffffff; --surface2: #ecebef; --text: #1f1d24; --muted: #6b6875;
+  --border: #dddbe2; --accent: #34508f; --accent-text: #ffffff; --danger: #c0392b;
+  --shadow: 0 2px 10px rgba(0,0,0,.12); --tier-ink: #1a1a1a; --up: #1d8a4a;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #14131a; --surface: #211f2a; --surface2: #2b2836; --text: #ecebf0; --muted: #9a97a6;
+    --border: #383444; --accent: #7d9ae0; --accent-text: #10131c; --danger: #ff6b5e;
+    --shadow: 0 2px 12px rgba(0,0,0,.5); --up: #4fd18a; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #14131a; --surface: #211f2a; --surface2: #2b2836; --text: #ecebf0; --muted: #9a97a6;
+  --border: #383444; --accent: #7d9ae0; --accent-text: #10131c; --danger: #ff6b5e;
+  --shadow: 0 2px 12px rgba(0,0,0,.5); --up: #4fd18a; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body {
+  background: var(--bg); color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Noto Sans JP", "Yu Gothic UI", sans-serif;
+  font-size: 15px; line-height: 1.45; -webkit-text-size-adjust: 100%;
+}
+button { font: inherit; color: inherit; cursor: pointer; }
+body::before {
+  content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--bg);
+}
+header {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 10; display: flex; align-items: center; gap: 8px;
+  padding-block: 10px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  background: var(--bg); border-bottom: 1px solid var(--border);
+}
+header h1 { flex: 1; margin: 0; font-size: 17px; font-weight: 700; letter-spacing: .02em; }
+.btn {
+  border: 1px solid var(--border); background: var(--surface); border-radius: 10px;
+  padding: 8px 12px; min-height: 40px;
+}
+.btn.primary { background: var(--accent); color: var(--accent-text); border-color: var(--accent); font-weight: 600; }
+.btn.danger { color: var(--danger); }
+.btn.block { display: block; width: 100%; text-align: left; }
+main {
+  padding-block: 10px 40px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  max-width: 900px; margin: 0 auto;
+}
+
+.tier { display: flex; margin-bottom: 6px; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+.tier-label {
+  flex: 0 0 48px; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  color: var(--tier-ink); padding: 4px 2px; text-align: center;
+}
+.tier-label .r { font-size: 22px; font-weight: 800; line-height: 1; }
+.tier-label .sub { font-size: 10px; margin-top: 2px; }
+.tier-label .n { font-size: 11px; margin-top: 3px; opacity: .75; }
+.tier[data-rank="S"] .tier-label { background: #ff7f7f; }
+.tier[data-rank="A"] .tier-label { background: #ffbf7f; }
+.tier[data-rank="B"] .tier-label { background: #ffdf7f; }
+.tier[data-rank="C"] .tier-label { background: #ffff7f; }
+.tier[data-rank="D"] .tier-label { background: #bfff7f; }
+.tier[data-rank="E"] .tier-label { background: #7fff9f; }
+.tier[data-rank="F"] .tier-label { background: #7fdfff; }
+.tier[data-rank="Z"] .tier-label { background: #c4c4cf; }
+.tier[data-rank="?"] .tier-label { background: #e6e6ec; }
+.tier-list {
+  flex: 1; list-style: none; margin: 0; padding: 6px; min-height: 52px;
+  display: flex; flex-wrap: wrap; gap: 6px; align-content: flex-start;
+}
+.chip {
+  background: var(--surface2); border: 1px solid var(--border); border-radius: 8px;
+  padding: 7px 10px; font-size: 14px; max-width: 100%;
+  user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; touch-action: manipulation;
+}
+.chip.ghost { opacity: .35; }
+.chip.chosen { box-shadow: var(--shadow); outline: 2px solid var(--accent); }
+
+.empty { text-align: center; padding: 48px 16px; color: var(--muted); }
+.empty p { margin: 0 0 16px; }
+.empty .btn { margin: 4px; }
+
+dialog {
+  border: none; border-radius: 16px; padding: 0; width: min(560px, calc(100vw - 24px));
+  max-height: calc(100dvh - 32px); background: var(--surface); color: var(--text); box-shadow: var(--shadow);
+}
+dialog::backdrop { background: rgba(0,0,0,.45); }
+.dlg { padding: 18px 16px 16px; display: flex; flex-direction: column; gap: 10px; }
+.dlg h2 { margin: 0; font-size: 18px; word-break: break-all; }
+.muted { color: var(--muted); font-size: 13px; margin: 0; }
+.rank-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
+.rank-grid button { min-height: 46px; border-radius: 10px; border: 2px solid transparent; font-weight: 800; font-size: 18px; color: var(--tier-ink); }
+.rank-grid button.current { border-color: var(--text); }
+.row { display: flex; gap: 8px; }
+.row > * { flex: 1; }
+input[type=text], textarea {
+  width: 100%; font: inherit; font-size: 16px; color: var(--text); background: var(--bg);
+  border: 1px solid var(--border); border-radius: 10px; padding: 10px;
+}
+textarea { min-height: 140px; font-size: 14px; font-family: ui-monospace, Menlo, monospace; }
+label.check { display: flex; align-items: center; gap: 8px; font-size: 14px; }
+.preview { font-size: 13px; background: var(--bg); border-radius: 10px; padding: 10px; overflow-x: auto; }
+.preview table { border-collapse: collapse; margin-top: 6px; }
+.preview td, .preview th { border: 1px solid var(--border); padding: 3px 6px; white-space: nowrap; }
+.warn { color: var(--danger); }
+button:focus-visible, .chip:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+@media (prefers-reduced-motion: reduce) { #toast { transition: none; } }
+.csv-out { min-height: 160px; font-size: 12px; }
+#toast {
+  position: fixed; left: 50%; bottom: calc(24px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%);
+  background: var(--text); color: var(--bg); padding: 10px 16px; border-radius: 999px; font-size: 14px;
+  opacity: 0; pointer-events: none; transition: opacity .2s; z-index: 100; max-width: calc(100vw - 32px);
+}
+#toast.show { opacity: 1; }
+.tabs { display: flex; gap: 4px; background: var(--surface2); border-radius: 12px; padding: 3px; margin-bottom: 10px; }
+.tabs button { flex: 1; border: 0; background: transparent; border-radius: 9px; min-height: 40px; font-weight: 600; color: var(--muted); }
+.tabs button[aria-selected="true"] { background: var(--surface); color: var(--text); box-shadow: var(--shadow); }
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 10px; }
+.card h3 { margin: 0; padding: 8px 12px; font-size: 14px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid var(--border); }
+.card h3 .cnt { color: var(--muted); font-weight: 400; font-size: 12px; }
+.rv-row { display: flex; align-items: center; gap: 8px; padding: 9px 12px; border-bottom: 1px solid var(--border); width: 100%; background: none; border-left: 0; border-right: 0; border-top: 0; text-align: left; }
+.rv-row:last-child { border-bottom: 0; }
+.rv-name { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+.hist { display: flex; align-items: center; gap: 2px; flex-wrap: wrap; justify-content: flex-end; max-width: 55%; font-size: 12px; color: var(--muted); }
+.rk { display: inline-flex; align-items: center; justify-content: center; min-width: 22px; height: 22px; padding: 0 4px; border-radius: 6px; font-weight: 800; font-size: 12px; color: var(--tier-ink); }
+.rk.none { background: transparent; color: var(--muted); border: 1px dashed var(--border); }
+.pos { font-size: 12px; color: var(--muted); white-space: nowrap; }
+.mark { font-weight: 800; font-size: 13px; }
+.mark.up { color: var(--up); } .mark.down { color: var(--danger); } .mark.new { color: var(--accent); }
+.filters { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 8px; }
+.filters button { border: 1px solid var(--border); background: var(--surface); border-radius: 999px; padding: 6px 12px; min-height: 36px; font-size: 13px; }
+.filters button[aria-pressed="true"] { background: var(--accent); color: var(--accent-text); border-color: var(--accent); }
+.pick { display: flex; align-items: center; gap: 6px; margin-bottom: 10px; }
+.pick select { flex: 1; min-width: 0; font: inherit; font-size: 16px; color: var(--text); background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 8px; min-height: 42px; }
+details.card summary { padding: 10px 12px; cursor: pointer; font-size: 14px; color: var(--muted); }
+.hist-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+.hist-table td, .hist-table th { padding: 7px 6px; border-bottom: 1px solid var(--border); text-align: left; }
+.snap-item { display: flex; align-items: center; gap: 8px; padding: 10px 0; border-bottom: 1px solid var(--border); }
+.snap-item:last-child { border-bottom: 0; }
+.snap-item .nm { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+.snap-item .btn { min-height: 36px; padding: 6px 12px; }
+.hist-table th { color: var(--muted); font-weight: 600; font-size: 12px; }
+
+</style>
+<header>
+  <h1>ヨルシカ ランキング</h1>
+  <button class="btn primary" id="addBtn">＋曲を追加</button>
+  <button class="btn" id="menuBtn" aria-label="メニュー">メニュー</button>
+</header>
+
+<main>
+  <nav class="tabs" id="tabs" role="tablist">
+    <button role="tab" data-view="edit" aria-selected="true">編集</button>
+    <button role="tab" data-view="review" aria-selected="false">見返し</button>
+    <button role="tab" data-view="compare" aria-selected="false">比較</button>
+  </nav>
+  <div class="empty" id="empty" hidden>
+    <p>まだ曲がありません。<br>スプレッドシートから貼り付けて取り込むか、1曲ずつ追加してください。</p>
+    <button class="btn primary" data-open="importDlg">スプシから取り込む</button>
+    <button class="btn" id="restoreBtn2">バックアップから復元</button>
+  </div>
+  <div id="board"></div>
+  <div id="reviewView" hidden>
+    <div class="filters" id="rvFilters"></div>
+    <p class="muted" id="rvNote" style="margin-bottom:8px"></p>
+    <div id="rvList"></div>
+  </div>
+  <div id="compareView" hidden>
+    <div class="pick">
+      <select id="cmpFrom" aria-label="比べる前"></select><span>→</span><select id="cmpTo" aria-label="比べる後"></select>
+    </div>
+    <div id="cmpList"></div>
+  </div>
+</main>
+
+<!-- 静止点の管理 -->
+<dialog id="snapDlg"><div class="dlg">
+  <h2>記録（静止点）の管理</h2>
+  <p class="muted">削除した記録は元に戻せません。</p>
+  <div id="snapList"></div>
+  <button class="btn" data-close>閉じる</button>
+</div></dialog>
+
+<!-- 曲の履歴 -->
+<dialog id="histDlg"><div class="dlg">
+  <h2 id="histName"></h2>
+  <table class="hist-table" id="histTable"></table>
+  <button class="btn" data-close>閉じる</button>
+</div></dialog>
+
+<!-- 曲の操作 -->
+<dialog id="songDlg"><div class="dlg">
+  <h2 id="songName"></h2>
+  <p class="muted">移動先のランクをタップ（ドラッグでも移動できます）</p>
+  <div class="rank-grid" id="rankGrid"></div>
+  <div class="row">
+    <button class="btn" id="renameBtn">名前を変更</button>
+    <button class="btn danger" id="deleteBtn">削除</button>
+  </div>
+  <button class="btn" data-close>閉じる</button>
+</div></dialog>
+
+<!-- 文字入力 -->
+<dialog id="textDlg"><form class="dlg" method="dialog" id="textForm">
+  <h2 id="textTitle"></h2>
+  <input type="text" id="textInput" autocomplete="off">
+  <div class="row">
+    <button class="btn" value="cancel" formnovalidate>キャンセル</button>
+    <button class="btn primary" value="ok">OK</button>
+  </div>
+</form></dialog>
+
+<!-- メニュー -->
+<dialog id="menuDlg"><div class="dlg">
+  <h2>メニュー</h2>
+  <button class="btn block primary" id="snapBtn">今の状態を記録（静止点）</button>
+  <p class="muted" id="snapInfo"></p>
+  <button class="btn block" id="snapManageBtn">記録（静止点）を管理・削除</button>
+  <button class="btn block" data-open="importDlg">スプシから取り込む</button>
+  <button class="btn block" id="exportBtn">バックアップを保存（CSV）</button>
+  <button class="btn block" id="restoreBtn">バックアップから復元（CSV）</button>
+  <p class="muted" id="backupInfo" style="white-space:pre-line"></p>
+  <button class="btn" data-close>閉じる</button>
+</div></dialog>
+
+<!-- 取り込み -->
+<dialog id="importDlg"><div class="dlg">
+  <h2>スプシから取り込む</h2>
+  <p class="muted">スプレッドシートで「曲名・ランク列（古い順）」の範囲を選んでコピーし、下に貼り付けてください。ランク列はそれぞれ過去の記録として保存され、いちばん右の列が今のランクになります。</p>
+  <textarea id="importText" placeholder="曲名&#9;2025-11&#9;2026-06&#10;ただ君に晴れ&#9;A&#9;S&#10;だから僕は音楽を辞めた&#9;B&#9;A"></textarea>
+  <label class="check"><input type="checkbox" id="hasHeader"> 1行目は見出し（列名を記録の名前に使う）</label>
+  <div class="preview" id="importPreview" hidden></div>
+  <div class="row">
+    <button class="btn" data-close>キャンセル</button>
+    <button class="btn primary" id="importOk" disabled>取り込む</button>
+  </div>
+</div></dialog>
+
+<!-- 確認 -->
+<dialog id="confirmDlg"><form class="dlg" method="dialog">
+  <h2 id="confirmTitle"></h2>
+  <p class="muted" id="confirmBody"></p>
+  <div class="row">
+    <button class="btn" value="cancel">キャンセル</button>
+    <button class="btn primary" value="ok" id="confirmOk"></button>
+  </div>
+</form></dialog>
+
+<!-- ファイル保存が使えないときのCSV表示 -->
+<dialog id="csvDlg"><div class="dlg">
+  <h2>バックアップ（CSV）</h2>
+  <p class="muted">この画面ではファイルを保存できませんでした。下の内容をコピーして、メモ帳などに「.csv」として保存してください。</p>
+  <textarea id="csvOut" class="csv-out" readonly></textarea>
+  <div class="row">
+    <button class="btn" data-close>閉じる</button>
+    <button class="btn primary" id="csvCopy">コピー</button>
+  </div>
+</div></dialog>
+
+<input type="file" id="restoreFile" accept=".csv,text/csv" hidden>
+<div id="toast"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.2/Sortable.min.js"></script>
+<script>
+// --- logic ---
+// 画面に依存しない処理。tests/logic.test.js から読み込んで検証する
+const RANKS = ['S', 'A', 'B', 'C', 'D', 'E', 'F', 'Z', '?'];
+const RANK_SUB = { Z: '判定不能', '?': '未知' };
+const CSV_FIXED = ['曲名', '試聴用ID', '現在のランク', '並び順'];
+
+function emptyState() {
+  return { songs: {}, order: Object.fromEntries(RANKS.map(r => [r, []])), snapshots: [], lastBackup: null };
+}
+function newId() {
+  return Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+}
+// 全角・小文字・前後空白を吸収。空欄は ''、ランク以外は null
+function normRank(v) {
+  const s = String(v ?? '').normalize('NFKC').trim().toUpperCase();
+  if (!s) return '';
+  return RANKS.includes(s) ? s : null;
+}
+
+function splitPasted(text) {
+  return text.replace(/\r/g, '').split('\n').map(l => l.split('\t'));
+}
+function looksLikeHeader(row) {
+  if (!row) return false;
+  return /曲名|タイトル|曲/.test(row[0] || '') || row.slice(1).some(c => c.trim() && normRank(c) === null);
+}
+
+// 貼り付けたTSVを解析。各ランク列 = その時点の記録、最右列 = 現在のランク
+function parseImport(text, hasHeader) {
+  const rows = splitPasted(text);
+  const header = hasHeader ? rows.shift() : null;
+  const data = rows.filter(r => (r[0] || '').trim());
+  let lastCol = 0;
+  for (const r of data) for (let i = 1; i < r.length; i++) if (r[i].trim()) lastCol = Math.max(lastCol, i);
+  const labels = [];
+  for (let i = 1; i <= lastCol; i++) labels.push((header && (header[i] || '').trim()) || `記録${i}`);
+  const warnings = [];
+  const songs = data.map(r => {
+    const ranks = labels.map((label, k) => {
+      const raw = r[k + 1] ?? '';
+      const v = normRank(raw);
+      if (v === null) { warnings.push({ name: r[0].trim(), label, value: raw.trim() }); return ''; }
+      return v;
+    });
+    return { name: r[0].trim(), ranks, current: ranks[ranks.length - 1] || '?' };
+  });
+  return { labels, songs, warnings };
+}
+
+function buildStateFromImport(parsed) {
+  const st = emptyState();
+  st.snapshots = parsed.labels.map(label => ({ label, ranks: {} }));
+  for (const s of parsed.songs) {
+    const id = newId();
+    st.songs[id] = { name: s.name, previewId: '' };
+    st.order[s.current].push(id);
+    s.ranks.forEach((r, k) => { if (r) st.snapshots[k].ranks[id] = r; });
+  }
+  return st;
+}
+
+function csvCell(v) {
+  const s = String(v ?? '');
+  return /[",\n\r]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
+}
+function toCSV(st) {
+  const lines = [[...CSV_FIXED, ...st.snapshots.map(s => s.label)]];
+  for (const r of RANKS) {
+    st.order[r].forEach((id, i) => {
+      const song = st.songs[id];
+      lines.push([song.name, song.previewId || '', r, i + 1, ...st.snapshots.map(s => s.ranks[id] || '')]);
+    });
+  }
+  return '﻿' + lines.map(l => l.map(csvCell).join(',')).join('\r\n') + '\r\n';
+}
+
+function parseCSV(text) {
+  const t = text.replace(/^﻿/, '');
+  const rows = []; let row = [], f = '', q = false;
+  for (let i = 0; i < t.length; i++) {
+    const c = t[i];
+    if (q) {
+      if (c === '"') { if (t[i + 1] === '"') { f += '"'; i++; } else q = false; }
+      else f += c;
+    } else if (c === '"') q = true;
+    else if (c === ',') { row.push(f); f = ''; }
+    else if (c === '\n') { row.push(f); rows.push(row); row = []; f = ''; }
+    else if (c !== '\r') f += c;
+  }
+  if (f || row.length) { row.push(f); rows.push(row); }
+  return rows;
+}
+
+// バックアップCSVから状態を復元。見出し名で列を探すので、列の追加には強いが削除・改名には弱い
+function stateFromCSV(text) {
+  const rows = parseCSV(text).filter(r => r.some(c => c.trim()));
+  if (!rows.length) throw new Error('CSVが空です');
+  const head = rows.shift().map(h => h.trim());
+  const col = name => head.indexOf(name);
+  const iName = col('曲名'), iId = col('試聴用ID'), iRank = col('現在のランク'), iOrder = col('並び順');
+  if (iName < 0 || iRank < 0) throw new Error('「曲名」「現在のランク」の列が見つかりません');
+  const snapCols = head.map((h, i) => i).filter(i => !CSV_FIXED.includes(head[i]) && head[i]);
+  const st = emptyState();
+  st.snapshots = snapCols.map(i => ({ label: head[i], ranks: {} }));
+  const placed = [];
+  rows.forEach((r, rowNo) => {
+    const name = (r[iName] || '').trim();
+    if (!name) return;
+    const id = newId();
+    st.songs[id] = { name, previewId: iId >= 0 ? (r[iId] || '').trim() : '' };
+    const rank = normRank(r[iRank]) || '?';
+    const ord = iOrder >= 0 ? parseFloat(r[iOrder]) : NaN;
+    placed.push({ id, rank, ord: isNaN(ord) ? Infinity : ord, rowNo });
+    snapCols.forEach((ci, k) => { const v = normRank(r[ci]); if (v) st.snapshots[k].ranks[id] = v; });
+  });
+  placed.sort((a, b) => a.ord - b.ord || a.rowNo - b.rowNo);
+  for (const p of placed) st.order[p.rank].push(p.id);
+  return st;
+}
+// --- end logic ---
+
+const KEY = 'yorushika-ranking-v1';
+const $ = s => document.querySelector(s);
+const board = $('#board');
+let state = load();
+let sortables = [];
+let dragging = false;
+let currentSong = null;
+
+function load() {
+  try {
+    const s = normalizeState(JSON.parse(localStorage.getItem(KEY)));
+    if (s) return s;
+  } catch (e) { /* 壊れていたら空から始める */ }
+  return emptyState();
+}
+// 保存: 端末(localStorage)は表示を速くするための控え。正本はアーティファクトのデータベース
+function save() {
+  const json = JSON.stringify(state);
+  try { localStorage.setItem(KEY, json); } catch (e) { /* 端末に保存できなくても続ける */ }
+  queueCloudSave(json);
+}
+
+// --- クラウド保存（Artifact の db 機能） ---
+let stateDoc = null;          // db の保存先ドキュメント
+let cloudReady = false;       // 最初の読み込みが済んだか
+let cloudStatus = 'connecting'; // connecting | ok | local | error
+let pendingJson = null, writing = false, saveTimer = null, lastCloudJson = null;
+
+function queueCloudSave(json) {
+  if ((!stateDoc && !chatStore) || !cloudReady) { pendingJson = json; return; }
+  pendingJson = json;
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(flushCloud, 600);
+}
+async function flushCloud() {
+  if (writing || (!stateDoc && !chatStore) || pendingJson === null) return;
+  const json = pendingJson; pendingJson = null;
+  if (json === lastCloudJson) return;
+  writing = true;
+  try {
+    if (chatStore) await chatStore.set(CHAT_KEY, json);
+    else await stateDoc.set({ json, updatedAt: Date.now() });
+    lastCloudJson = json; cloudStatus = 'ok';
+  } catch (err) {
+    if (err?.code === 'unavailable' && !chatStore) { pendingJson = pendingJson ?? json; setTimeout(flushCloud, 1500 + Math.random() * 1500); }
+    else { cloudStatus = 'error'; toast('クラウドに保存できませんでした。バックアップを保存してください'); }
+  } finally {
+    writing = false;
+    if (pendingJson !== null) flushCloud();
+  }
+}
+function normalizeState(s) {
+  if (!s || !s.songs || !s.order) return null;
+  for (const r of RANKS) s.order[r] = s.order[r] || [];
+  s.snapshots = s.snapshots || [];
+  return s;
+}
+function anyDialogOpen() { return !!document.querySelector('dialog[open]'); }
+let deferredRemote = null;
+function applyRemote(json) {
+  let s = null;
+  try { s = normalizeState(JSON.parse(json)); } catch (e) {}
+  if (!s) return;
+  if (dragging || anyDialogOpen()) { deferredRemote = json; return; }
+  deferredRemote = null;
+  lastCloudJson = json;
+  if (json === JSON.stringify(state)) return;
+  state = s;
+  try { localStorage.setItem(KEY, json); } catch (e) {}
+  render();
+}
+// 通常のClaudeチャットで公開したアプリ用: window.storage（個人用の保存領域）
+const CHAT_KEY = 'yorushika-ranking-state';
+let chatStore = null;
+async function connectChatStorage() {
+  const st = window.storage;
+  if (!st || typeof st.get !== 'function' || typeof st.set !== 'function') return false;
+  chatStore = st;
+  let saved = null;
+  try { saved = await st.get(CHAT_KEY); } catch (e) { saved = null; } // 未保存のときはエラーになる実装もある
+  cloudReady = true; cloudStatus = 'ok';
+  const json = saved && typeof saved.value === 'string' ? saved.value : null;
+  if (json) applyRemote(json);
+  else if (Object.keys(state.songs).length) { pendingJson = JSON.stringify(state); }
+  if (pendingJson !== null) flushCloud();
+  return true;
+}
+async function connectCloud() {
+  const db = await window.claude?.use?.('db')?.catch?.(() => null);
+  if (!db) {
+    if (await connectChatStorage()) return;
+    cloudStatus = 'local'; return;
+  }
+  try { stateDoc = db.doc('app/state'); } catch (e) { cloudStatus = 'local'; return; }
+  let first = true;
+  stateDoc.onSnapshot(snap => {
+    if (snap.metadata.hasPendingWrites) return;
+    if (first && snap.metadata.fromCache) return; // サーバーの確定値を待つ
+    if (first) {
+      first = false; cloudReady = true; cloudStatus = 'ok';
+      if (snap.exists && typeof snap.data().json === 'string') {
+        applyRemote(snap.data().json);
+      } else if (Object.keys(state.songs).length) {
+        // まだクラウドに何もない → この端末に残っているデータを移す
+        pendingJson = JSON.stringify(state); flushCloud();
+        toast('この端末のデータをクラウドに保存しました');
+      }
+      if (pendingJson !== null) flushCloud();
+      return;
+    }
+    if (snap.exists && typeof snap.data().json === 'string' && snap.data().json !== lastCloudJson) applyRemote(snap.data().json);
+  }, () => { cloudStatus = 'error'; });
+}
+// ダイアログを閉じた・ドラッグを終えたときに、保留していた他端末の変更を反映
+document.addEventListener('close', () => { if (deferredRemote) setTimeout(() => deferredRemote && applyRemote(deferredRemote), 0); }, true);
+function toast(msg) {
+  const t = $('#toast'); t.textContent = msg; t.classList.add('show');
+  clearTimeout(toast.timer); toast.timer = setTimeout(() => t.classList.remove('show'), 2200);
+}
+function rankOf(id) { return RANKS.find(r => state.order[r].includes(id)); }
+
+function render() {
+  sortables.forEach(s => s.destroy()); sortables = [];
+  board.textContent = '';
+  const total = Object.keys(state.songs).length;
+  $('#empty').hidden = total > 0;
+  for (const r of RANKS) {
+    const sec = document.createElement('section'); sec.className = 'tier'; sec.dataset.rank = r;
+    const lab = document.createElement('div'); lab.className = 'tier-label';
+    lab.innerHTML = `<span class="r"></span>${RANK_SUB[r] ? '<span class="sub"></span>' : ''}<span class="n"></span>`;
+    lab.querySelector('.r').textContent = r;
+    if (RANK_SUB[r]) lab.querySelector('.sub').textContent = RANK_SUB[r];
+    const list = document.createElement('ul'); list.className = 'tier-list'; list.dataset.rank = r;
+    for (const id of state.order[r]) {
+      const li = document.createElement('li'); li.className = 'chip'; li.dataset.id = id;
+      li.textContent = state.songs[id].name;
+      list.append(li);
+    }
+    sec.append(lab, list);
+    board.append(sec);
+    if (window.Sortable) {
+      sortables.push(Sortable.create(list, {
+        group: 'tiers', animation: 150, delay: 180, delayOnTouchOnly: true, touchStartThreshold: 6,
+        ghostClass: 'ghost', chosenClass: 'chosen', scroll: true, scrollSensitivity: 90, bubbleScroll: true,
+        onStart() { dragging = true; },
+        onEnd() { syncFromDom(); setTimeout(() => { dragging = false; if (deferredRemote) applyRemote(deferredRemote); }, 80); },
+      }));
+    }
+  }
+  updateCounts();
+  showView();
+}
+function syncFromDom() {
+  for (const list of board.querySelectorAll('.tier-list')) {
+    state.order[list.dataset.rank] = [...list.children].map(li => li.dataset.id);
+  }
+  save(); updateCounts();
+}
+function updateCounts() {
+  for (const sec of board.querySelectorAll('.tier')) {
+    sec.querySelector('.n').textContent = state.order[sec.dataset.rank].length + '曲';
+  }
+}
+
+// --- 文字入力ダイアログ ---
+function askText(title, value = '') {
+  const dlg = $('#textDlg');
+  $('#textTitle').textContent = title;
+  $('#textInput').value = value;
+  dlg.returnValue = '';
+  dlg.showModal();
+  $('#textInput').focus();
+  return new Promise(resolve => {
+    dlg.addEventListener('close', () => {
+      const v = $('#textInput').value.trim();
+      resolve(dlg.returnValue === 'ok' && v ? v : null);
+    }, { once: true });
+  });
+}
+
+// --- 確認ダイアログ（viewer では confirm() が使えないため） ---
+function askConfirm(title, body, okLabel) {
+  const dlg = $('#confirmDlg');
+  $('#confirmTitle').textContent = title;
+  $('#confirmBody').textContent = body;
+  $('#confirmOk').textContent = okLabel;
+  dlg.returnValue = '';
+  dlg.showModal();
+  return new Promise(resolve => {
+    dlg.addEventListener('close', () => resolve(dlg.returnValue === 'ok'), { once: true });
+  });
+}
+
+// --- 曲の操作 ---
+const RANK_COLORS = { S: '#ff7f7f', A: '#ffbf7f', B: '#ffdf7f', C: '#ffff7f', D: '#bfff7f', E: '#7fff9f', F: '#7fdfff', Z: '#c4c4cf', '?': '#e6e6ec' };
+const grid = $('#rankGrid');
+for (const r of RANKS) {
+  const b = document.createElement('button'); b.textContent = r; b.dataset.rank = r;
+  b.style.background = RANK_COLORS[r];
+  grid.append(b);
+}
+
+function openSong(id) {
+  currentSong = id;
+  $('#songName').textContent = state.songs[id].name;
+  const cur = rankOf(id);
+  grid.querySelectorAll('button').forEach(b => b.classList.toggle('current', b.dataset.rank === cur));
+  $('#songDlg').showModal();
+}
+board.addEventListener('click', e => {
+  if (dragging) return;
+  const c = e.target.closest('.chip');
+  if (c) openSong(c.dataset.id);
+});
+grid.addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b) return;
+  const to = b.dataset.rank, from = rankOf(currentSong);
+  if (to !== from) {
+    state.order[from] = state.order[from].filter(x => x !== currentSong);
+    state.order[to].push(currentSong);
+    save(); render();
+    toast(`「${state.songs[currentSong].name}」を ${to} へ移動しました`);
+  }
+  $('#songDlg').close();
+});
+$('#renameBtn').addEventListener('click', async () => {
+  const id = currentSong;
+  $('#songDlg').close();
+  const name = await askText('名前を変更', state.songs[id].name);
+  if (name) { state.songs[id].name = name; save(); render(); }
+});
+$('#deleteBtn').addEventListener('click', async () => {
+  const id = currentSong;
+  if (!await askConfirm(`「${state.songs[id].name}」を削除`, '過去の記録からも消えます。元に戻せません。', '削除する')) return;
+  const r = rankOf(id);
+  state.order[r] = state.order[r].filter(x => x !== id);
+  delete state.songs[id];
+  for (const s of state.snapshots) delete s.ranks[id];
+  save(); render();
+  $('#songDlg').close();
+});
+
+// --- 曲の追加 ---
+$('#addBtn').addEventListener('click', async () => {
+  const name = await askText('曲を追加（「?」に入ります）');
+  if (!name) return;
+  const id = newId();
+  state.songs[id] = { name, previewId: '' };
+  state.order['?'].push(id);
+  save(); render();
+  toast(`「${name}」を追加しました`);
+});
+
+// --- ダイアログ共通 ---
+document.addEventListener('click', e => {
+  const open = e.target.closest('[data-open]');
+  if (open) { document.querySelectorAll('dialog[open]').forEach(d => d.close()); $('#' + open.dataset.open).showModal(); }
+  const close = e.target.closest('[data-close]');
+  if (close) close.closest('dialog').close();
+});
+document.querySelectorAll('dialog').forEach(d => d.addEventListener('click', e => { if (e.target === d) d.close(); }));
+$('#menuBtn').addEventListener('click', () => {
+  const where = { ok: '保存先: クラウド（端末を変えても残ります）', connecting: '保存先: クラウドに接続中…', local: '保存先: この端末のみ（消える可能性があります。バックアップを保存してください）', error: '保存先: クラウドに保存できていません。バックアップを保存してください' }[cloudStatus];
+  $('#backupInfo').textContent = where + '\n最終バックアップ: ' + (state.lastBackup ? new Date(state.lastBackup).toLocaleString('ja-JP') : 'まだありません');
+  const n = state.snapshots.length;
+  $('#snapInfo').textContent = n ? `記録 ${n}件（最新: ${state.snapshots[n - 1].label}）` : 'まだ記録がありません';
+  $('#menuDlg').showModal();
+});
+
+// --- 静止点（今の状態を記録） ---
+const SCORED = ['S', 'A', 'B', 'C', 'D', 'E', 'F']; // 上下の判定に使うランク（Z・?は対象外）
+function currentPositions() {
+  const pos = {}; let n = 0;
+  for (const r of SCORED) for (const id of state.order[r]) pos[id] = ++n;
+  return pos;
+}
+function compareWith(prev) {
+  let up = 0, down = 0;
+  for (const r of SCORED) for (const id of state.order[r]) {
+    const p = prev.ranks[id];
+    if (!SCORED.includes(p)) continue;
+    const d = SCORED.indexOf(p) - SCORED.indexOf(r);
+    if (d > 0) up++; else if (d < 0) down++;
+  }
+  return { up, down };
+}
+$('#snapBtn').addEventListener('click', async () => {
+  $('#menuDlg').close();
+  if (!Object.keys(state.songs).length) { toast('曲がまだありません'); return; }
+  const label = await askText('今の状態を記録（名前は日付がおすすめ）', new Date().toLocaleDateString('sv-SE'));
+  if (!label) return;
+  const idx = state.snapshots.findIndex(s => s.label === label);
+  if (idx >= 0 && !await askConfirm(`「${label}」はすでにあります`, 'この名前の記録を今の状態で上書きしますか？', '上書きする')) return;
+  const ranks = {};
+  for (const r of RANKS) for (const id of state.order[r]) ranks[id] = r;
+  const snap = { label, ranks, pos: currentPositions(), at: Date.now() };
+  const prev = state.snapshots.filter((_, i) => i !== idx).at(-1);
+  if (idx >= 0) state.snapshots[idx] = snap; else state.snapshots.push(snap);
+  save();
+  let msg = `「${label}」を記録しました`;
+  if (prev) { const c = compareWith(prev); msg += `（前回「${prev.label}」から ↑${c.up}曲 ↓${c.down}曲）`; }
+  toast(msg);
+});
+
+// --- 取り込み ---
+let parsedImport = null;
+function refreshImportPreview() {
+  const text = $('#importText').value;
+  const pv = $('#importPreview');
+  parsedImport = text.trim() ? parseImport(text, $('#hasHeader').checked) : null;
+  $('#importOk').disabled = !parsedImport || !parsedImport.songs.length;
+  if (!parsedImport) { pv.hidden = true; return; }
+  const p = parsedImport;
+  const dist = RANKS.map(r => `${r}:${p.songs.filter(s => s.current === r).length}`).join(' ');
+  pv.textContent = '';
+  const add = (tag, text, cls) => { const e = document.createElement(tag); e.textContent = text; if (cls) e.className = cls; pv.append(e); return e; };
+  add('div', `${p.songs.length}曲 / 記録の列: ${p.labels.length ? p.labels.join('、') : 'なし（全曲「?」に入ります）'}`);
+  if (p.labels.length) add('div', `今のランク（「${p.labels[p.labels.length - 1]}」の列）: ${dist}`);
+  if (p.warnings.length) {
+    add('div', `ランクとして読めない値が${p.warnings.length}件あります（空欄扱いにします）:`, 'warn');
+    p.warnings.slice(0, 8).forEach(w => add('div', `・${w.name} / ${w.label}: 「${w.value}」`, 'warn'));
+    if (p.warnings.length > 8) add('div', `…ほか${p.warnings.length - 8}件`, 'warn');
+  }
+  const table = document.createElement('table');
+  const tr0 = table.insertRow();
+  ['曲名', ...p.labels].forEach(h => { const th = document.createElement('th'); th.textContent = h; tr0.append(th); });
+  p.songs.slice(0, 5).forEach(s => { const tr = table.insertRow(); [s.name, ...s.ranks].forEach(v => { tr.insertCell().textContent = v; }); });
+  pv.append(table);
+  if (p.songs.length > 5) add('div', `…ほか${p.songs.length - 5}曲`, 'muted');
+  pv.hidden = false;
+}
+$('#importText').addEventListener('input', () => {
+  $('#hasHeader').checked = looksLikeHeader(splitPasted($('#importText').value)[0]);
+  refreshImportPreview();
+});
+$('#hasHeader').addEventListener('change', refreshImportPreview);
+$('#importOk').addEventListener('click', async () => {
+  if (!parsedImport) return;
+  if (Object.keys(state.songs).length &&
+      !await askConfirm('今のデータを置き換えます', '取り込むと、今の曲・ランク・記録はすべて消えます。不安なら先にバックアップを保存してください。', '置き換える')) return;
+  state = buildStateFromImport(parsedImport);
+  save(); render();
+  $('#importDlg').close();
+  $('#importText').value = ''; refreshImportPreview();
+  toast(`${Object.keys(state.songs).length}曲を取り込みました`);
+});
+
+// --- バックアップ ---
+// ファイル保存は Artifact の downloads 機能を使う。使えない画面では CSV を表示してコピーしてもらう
+let downloads = null;
+window.claude?.use?.('downloads').then(d => { downloads = d; }).catch(() => {});
+function showCsvText(csv) {
+  $('#csvOut').value = csv.replace(/^\uFEFF/, '');
+  $('#csvDlg').showModal();
+}
+$('#exportBtn').addEventListener('click', async () => {
+  const csv = toCSV(state);
+  $('#menuDlg').close();
+  if (!downloads) {
+    // Claude の外（普通のブラウザ）: 通常のダウンロードで保存
+    if (!window.claude?.use) {
+      try {
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' }));
+        a.download = `yorushika-ranking-${new Date().toLocaleDateString('sv-SE')}.csv`;
+        document.body.append(a); a.click(); a.remove();
+        setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+        state.lastBackup = Date.now(); save();
+        toast('バックアップを保存しました');
+        return;
+      } catch (e) { /* 失敗したらテキスト表示へ */ }
+    }
+    showCsvText(csv); return;
+  }
+  try {
+    await downloads.save({ filename: `yorushika-ranking-${new Date().toLocaleDateString('sv-SE')}.csv`, data: csv });
+    state.lastBackup = Date.now(); save();
+    toast('バックアップを保存しました');
+  } catch (err) {
+    if (err?.code === 'declined') toast('保存をキャンセルしました');
+    else if (err?.code === 'rate_limited') toast('少し待ってからもう一度お試しください');
+    else showCsvText(csv);
+  }
+});
+$('#csvCopy').addEventListener('click', async () => {
+  const ta = $('#csvOut');
+  try { await navigator.clipboard.writeText(ta.value); toast('コピーしました'); }
+  catch (e) { ta.focus(); ta.select(); toast('選択しました。長押しでコピーしてください'); return; }
+  state.lastBackup = Date.now(); save();
+});
+const startRestore = () => $('#restoreFile').click();
+$('#restoreBtn').addEventListener('click', startRestore);
+$('#restoreBtn2').addEventListener('click', startRestore);
+$('#restoreFile').addEventListener('change', async e => {
+  const file = e.target.files[0]; e.target.value = '';
+  if (!file) return;
+  try {
+    const st = stateFromCSV(await file.text());
+    const n = Object.keys(st.songs).length;
+    if (!await askConfirm('バックアップから復元', `${n}曲・記録${st.snapshots.length}件を読み込みます。今のデータはすべて置き換わります。`, '復元する')) return;
+    st.lastBackup = state.lastBackup;
+    state = st; save(); render();
+    document.querySelectorAll('dialog[open]').forEach(d => d.close());
+    toast('復元しました');
+  } catch (err) {
+    await askConfirm('復元できませんでした', err.message + '。バックアップで保存したCSVを、列を消したり見出しを変えたりせずに選んでください。', 'OK');
+  }
+});
+
+
+// --- 見返し・比較 ---
+let view = 'edit', rvFilter = 'all';
+function nowSnap() {
+  const ranks = {};
+  for (const r of RANKS) for (const id of state.order[r]) ranks[id] = r;
+  return { label: '今', ranks, pos: currentPositions(), now: true };
+}
+// 前→後のランク変化を分類。Zが絡む・判定できない場合は null
+function classify(a, b) {
+  if (a === 'Z' || b === 'Z' || !b) return null;
+  const sa = SCORED.includes(a), sb = SCORED.includes(b);
+  if (!sb) return null;
+  if (!sa) return 'new';
+  const d = SCORED.indexOf(a) - SCORED.indexOf(b);
+  return d > 0 ? 'up' : d < 0 ? 'down' : 'same';
+}
+const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
+function rankBadge(r) {
+  const b = el('span', 'rk' + (r ? '' : ' none'), r || '–');
+  if (r) b.style.background = RANK_COLORS[r];
+  return b;
+}
+const MARK = { up: '↑', down: '↓', new: '新' };
+
+function showView() {
+  const empty = !Object.keys(state.songs).length;
+  $('#tabs').hidden = empty;
+  board.hidden = empty || view !== 'edit';
+  $('#reviewView').hidden = empty || view !== 'review';
+  $('#compareView').hidden = empty || view !== 'compare';
+  $('#addBtn').hidden = view !== 'edit';
+  document.querySelectorAll('#tabs button').forEach(b => b.setAttribute('aria-selected', b.dataset.view === view));
+  if (empty) return;
+  if (view === 'review') renderReview();
+  if (view === 'compare') renderCompare();
+}
+$('#tabs').addEventListener('click', e => {
+  const b = e.target.closest('button[data-view]'); if (!b) return;
+  view = b.dataset.view; showView(); window.scrollTo(0, 0);
+});
+
+function renderReview() {
+  const snaps = state.snapshots;
+  const a = snaps[snaps.length - 2], b = snaps[snaps.length - 1];
+  const canFilter = a && b;
+  if (!canFilter) rvFilter = 'all';
+  const fbox = $('#rvFilters'); fbox.textContent = '';
+  [['all', 'すべて'], ['up', '↑ 上がった'], ['down', '↓ 下がった'], ['new', '新しく知った']].forEach(([k, t]) => {
+    if (k !== 'all' && !canFilter) return;
+    const btn = el('button', '', t); btn.dataset.f = k; btn.setAttribute('aria-pressed', rvFilter === k);
+    fbox.append(btn);
+  });
+  $('#rvNote').textContent = canFilter
+    ? `横の並びは静止点の古い順（${snaps.map(s => s.label).join(' → ')}）。絞り込みは「${a.label}」→「${b.label}」で判定`
+    : snaps.length ? `横の並びは静止点（${snaps[0].label}）。静止点が2つ以上になると上下で絞り込めます` : 'まだ静止点がありません。メニューの「今の状態を記録」で残せます';
+  const list = $('#rvList'); list.textContent = '';
+  const pos = currentPositions();
+  for (const r of RANKS) {
+    let ids = state.order[r];
+    if (rvFilter !== 'all') ids = ids.filter(id => classify(a.ranks[id], b.ranks[id]) === rvFilter);
+    if (!ids.length) continue;
+    const card = el('section', 'card');
+    const h = el('h3'); h.append(rankBadge(r), el('span', '', RANK_SUB[r] || ''), el('span', 'cnt', ids.length + '曲'));
+    card.append(h);
+    for (const id of ids) {
+      const row = el('button', 'rv-row'); row.dataset.id = id;
+      if (pos[id]) row.append(el('span', 'pos', pos[id] + '位'));
+      row.append(el('span', 'rv-name', state.songs[id].name));
+      const hist = el('span', 'hist');
+      snaps.forEach((s, i) => { if (i) hist.append('→'); hist.append(rankBadge(s.ranks[id])); });
+      if (canFilter) { const c = classify(a.ranks[id], b.ranks[id]); if (MARK[c]) hist.append(el('span', 'mark ' + c, ' ' + MARK[c])); }
+      row.append(hist);
+      card.append(row);
+    }
+    list.append(card);
+  }
+  if (!list.children.length) list.append(el('p', 'empty', '該当する曲はありません'));
+}
+$('#rvFilters').addEventListener('click', e => {
+  const b = e.target.closest('button[data-f]'); if (!b) return;
+  rvFilter = b.dataset.f; renderReview();
+});
+
+let cmpFrom = null, cmpTo = null; // 選択（静止点のラベル。'__now' は今の状態）
+function snapByKey(k) { return k === '__now' ? nowSnap() : state.snapshots.find(s => s.label === k); }
+function renderCompare() {
+  const snaps = state.snapshots;
+  const keys = [...snaps.map(s => s.label), '__now'];
+  if (!keys.includes(cmpTo)) cmpTo = snaps.length >= 2 ? snaps[snaps.length - 1].label : '__now';
+  if (!keys.includes(cmpFrom) || cmpFrom === cmpTo) {
+    const ti = keys.indexOf(cmpTo);
+    cmpFrom = ti > 0 ? keys[ti - 1] : keys[0];
+  }
+  for (const [sel, cur] of [[$('#cmpFrom'), cmpFrom], [$('#cmpTo'), cmpTo]]) {
+    sel.textContent = '';
+    for (const k of keys) { const o = el('option', '', k === '__now' ? '今の状態' : k); o.value = k; sel.append(o); }
+    sel.value = cur;
+  }
+  const list = $('#cmpList'); list.textContent = '';
+  if (!snaps.length) { list.append(el('p', 'empty', 'まだ静止点がありません。メニューの「今の状態を記録」で残すと、ここで比べられます')); return; }
+  const A = snapByKey(cmpFrom), B = snapByKey(cmpTo);
+  const groups = { up: [], down: [], new: [], same: [] };
+  for (const id of Object.keys(state.songs)) {
+    const c = classify(A.ranks[id], B.ranks[id]);
+    if (c) groups[c].push(id);
+  }
+  const jump = id => Math.abs(SCORED.indexOf(A.ranks[id]) - SCORED.indexOf(B.ranks[id]));
+  groups.up.sort((x, y) => jump(y) - jump(x) || SCORED.indexOf(B.ranks[x]) - SCORED.indexOf(B.ranks[y]));
+  groups.down.sort((x, y) => jump(y) - jump(x));
+  groups.new.sort((x, y) => SCORED.indexOf(B.ranks[x]) - SCORED.indexOf(B.ranks[y]));
+  const row = id => {
+    const r = el('button', 'rv-row'); r.dataset.id = id;
+    r.append(el('span', 'rv-name', state.songs[id].name));
+    const h = el('span', 'hist'); h.append(rankBadge(A.ranks[id]), '→', rankBadge(B.ranks[id]));
+    const pa = A.pos?.[id], pb = B.pos?.[id];
+    if (pa && pb) h.append(el('span', 'pos', ` ${pa}→${pb}位`));
+    r.append(h); return r;
+  };
+  const section = (key, title) => {
+    const ids = groups[key]; if (!ids.length) return;
+    const card = el('section', 'card');
+    const h = el('h3'); h.append(el('span', 'mark ' + key, MARK[key]), el('span', '', title), el('span', 'cnt', ids.length + '曲'));
+    card.append(h); ids.forEach(id => card.append(row(id))); list.append(card);
+  };
+  section('up', '上がった'); section('down', '下がった'); section('new', '新しく知った');
+  if (groups.same.length) {
+    const d = el('details', 'card'); d.append(el('summary', '', `変わらず ${groups.same.length}曲`));
+    groups.same.forEach(id => d.append(row(id))); list.append(d);
+  }
+  if (!groups.up.length && !groups.down.length && !groups.new.length) list.prepend(el('p', 'muted', 'ランクが変わった曲はありません'));
+}
+$('#cmpFrom').addEventListener('change', e => { cmpFrom = e.target.value; renderCompare(); });
+$('#cmpTo').addEventListener('change', e => { cmpTo = e.target.value; renderCompare(); });
+
+// 曲をタップ → 静止点ごとのランクと順位
+function openHistory(id) {
+  $('#histName').textContent = state.songs[id].name;
+  const t = $('#histTable'); t.textContent = '';
+  const hr = t.insertRow(); ['静止点', 'ランク', '順位'].forEach(x => hr.append(el('th', '', x)));
+  for (const s of [...state.snapshots, nowSnap()]) {
+    const tr = t.insertRow();
+    tr.insertCell().textContent = s.now ? '今' : s.label;
+    tr.insertCell().append(rankBadge(s.ranks[id]));
+    tr.insertCell().textContent = s.pos?.[id] ? s.pos[id] + '位' : '–';
+  }
+  $('#histDlg').showModal();
+}
+for (const box of ['#rvList', '#cmpList']) $(box).addEventListener('click', e => {
+  const r = e.target.closest('.rv-row'); if (r) openHistory(r.dataset.id);
+});
+
+
+// --- 静止点の管理（削除） ---
+function renderSnapList() {
+  const box = $('#snapList'); box.textContent = '';
+  if (!state.snapshots.length) { box.append(el('p', 'muted', 'まだ記録がありません')); return; }
+  state.snapshots.forEach((sn, i) => {
+    const row = el('div', 'snap-item');
+    row.append(el('span', 'nm', sn.label), el('span', 'muted', Object.keys(sn.ranks).length + '曲'));
+    const del = el('button', 'btn danger', '削除'); del.dataset.i = i;
+    row.append(del); box.append(row);
+  });
+}
+$('#snapManageBtn').addEventListener('click', () => {
+  $('#menuDlg').close(); renderSnapList(); $('#snapDlg').showModal();
+});
+$('#snapList').addEventListener('click', async e => {
+  const b = e.target.closest('button[data-i]'); if (!b) return;
+  const sn = state.snapshots[+b.dataset.i]; if (!sn) return;
+  $('#snapDlg').close();
+  const ok = await askConfirm(`記録「${sn.label}」を削除`, '曲やランクはそのままで、この時点の記録だけが消えます。元に戻せません。', '削除する');
+  if (ok) {
+    const i = state.snapshots.indexOf(sn);
+    if (i >= 0) state.snapshots.splice(i, 1);
+    save(); render();
+    toast(`「${sn.label}」を削除しました`);
+  }
+  renderSnapList(); $('#snapDlg').showModal();
+});
+
+if (!window.Sortable) toast('ドラッグ機能を読み込めませんでした。曲をタップして移動できます');
+render();
+connectCloud();
+</script>
+
+</body></html>
