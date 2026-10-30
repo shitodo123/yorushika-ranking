@@ -1,0 +1,71 @@
+name: 公開スイッチ
+
+# GitHubアプリの「アクション」から手動で実行して、公開をオン／オフする
+on:
+  workflow_dispatch:
+    inputs:
+      state:
+        description: "on = 公開する / off = 公開を止める"
+        required: true
+        default: "on"
+        type: choice
+        options: ["on", "off"]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+  actions: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+    env:
+      # URLのフォルダ名。リポジトリのシークレット PAGE_PATH に入れる（ログには *** と表示される）
+      PAGE_PATH: ${{ secrets.PAGE_PATH }}
+      STATE: ${{ inputs.state }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: ページを組み立てる
+        run: |
+          set -eu
+          mkdir -p _site
+          touch _site/.nojekyll
+          # トップは常に空のページ（アプリの場所を出さない）
+          printf '<!doctype html><meta charset="utf-8"><title>404</title><p>Not Found</p>\n' > _site/index.html
+          cp _site/index.html _site/404.html
+          if [ "$STATE" = "on" ]; then
+            if ! printf '%s' "$PAGE_PATH" | grep -Eq '^[A-Za-z0-9_-]{8,64}$'; then
+              echo "::error::シークレット PAGE_PATH が未設定か、使えない文字が入っています（英数字・-・_ で8文字以上）"
+              exit 1
+            fi
+            mkdir -p "_site/$PAGE_PATH"
+            cp app/index.html "_site/$PAGE_PATH/index.html"
+            echo "公開: オン"
+          else
+            echo "公開: オフ（空のページだけを公開）"
+          fi
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+          retention-days: 1
+
+      - id: deployment
+        uses: actions/deploy-pages@v4
+
+      # 公開リポジトリでは成果物を誰でもダウンロードできるので、フォルダ名が漏れないよう公開後すぐ消す
+      - name: 成果物を削除
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          ids=$(gh api "repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/artifacts" --jq '.artifacts[].id')
+          for id in $ids; do gh api -X DELETE "repos/${{ github.repository }}/actions/artifacts/$id"; done
