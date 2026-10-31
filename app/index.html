@@ -261,6 +261,7 @@ details.card summary { padding: 10px 12px; cursor: pointer; font-size: 14px; col
 <input type="file" id="restoreFile" accept=".csv,text/csv" hidden>
 <div id="toast"></div>
 
+<script>window.SEED_SONGS = ["藍二乗", "六月は雨上がりの街を書く", "エルマ", "雨とカプチーノ", "春ひさぎ", "思想犯", "春泥棒", "憂、燦々", "雲と幽霊", "エイミー", "晴る", "あの夏に咲け", "負け犬にアンコールはいらない", "パレード", "夜紛い", "又三郎", "茜", "櫂", "風を食む", "アルジャーノン", "千鳥", "火星人", "ルバート", "へび", "うめき", "靴の花火", "夜行", "盗作", "ただ君に晴れ", "夕凪、某、花惑い", "昼鳶", "強盗と花束", "太陽", "爆弾魔 - Re-Recording", "ブレーメン", "忘れてください", "アポリア", "ダルマグランプリ", "あぶく", "八月、某、月明かり", "ノーチラス", "言って。", "爆弾魔", "ヒッチコック", "踊ろうぜ", "歩く", "詩書きとコーヒー", "花に亡霊", "レプリカント", "花人局", "嘘月", "左右盲", "星めぐる詩", "若者のすべて", "ポスト春", "カトレア", "だから僕は音楽を辞めた", "老人と海", "テレパス", "都落ち", "斜陽", "準透明少年", "心に穴が空いた", "憂一乗", "声", "月に吠える", "チノカテ", "451", "第一夜", "修羅", "花も騒めく", "魔性", "月光浴", "冬眠", "五月は花緑青の窓辺から", "逃亡", "プレイシック", "雲になる", "神様のダンス", "雨晴るる", "火葬", "啄木鳥", "夏陰、ピアノを弾く", "飛行", "前世", "落下", "夏、バス停、君を待つ", "8/31", "7/13", "5/6", "4/10", "車窓", "湖の街", "森の教会", "海底、月明かりc", "音楽泥棒の自白", "青年期、空き巣", "朱夏期、音楽泥棒", "幼年期、思い出の中", "創作", "早朝、郵便受け", "海へ", "melt　TK from 凛として時雨, suis from ヨルシカ", "Make-up Shadow", "時をめくる指　下村陽子, suis from ヨルシカ", "平行線", "Shounen Jidai", "Shounen Jidai - LUCA ver.", "宇宙の季節　Lanndo, Eve, suis from ヨルシカ", "最後の心臓 - ［Vocal : suis (ヨルシカ)］Mondo Grosso, suis from ヨルシカ", "サンサーラ", "B∀LK", "先日はロマンス feat. suis from ヨルシカ", "Travelers", "ナイトルーティーン", "ソウルズ", "さよならモルテン", "いさな", "雪国", "パドドゥ", "夏の肖像", "第二夜", "第三夜", "第四夜", "第五夜", "第六夜", "第七夜", "第八夜", "第九夜", "第十夜"];</script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.2/Sortable.min.js"></script>
 <script>
 // --- logic ---
@@ -397,6 +398,14 @@ function load() {
     const s = normalizeState(JSON.parse(localStorage.getItem(KEY)));
     if (s) return s;
   } catch (e) { /* 壊れていたら空から始める */ }
+  // 初めて開いたとき: 公開版に入っている曲リストを全曲「?」に入れて始める
+  const seed = window.SEED_SONGS;
+  if (Array.isArray(seed) && seed.length) {
+    const st = emptyState();
+    for (const name of seed) { const id = newId(); st.songs[id] = { name, previewId: '' }; st.order['?'].push(id); }
+    try { localStorage.setItem(KEY, JSON.stringify(st)); } catch (e) {}
+    return st;
+  }
   return emptyState();
 }
 // 保存: 端末(localStorage)は表示を速くするための控え。正本はアーティファクトのデータベース
